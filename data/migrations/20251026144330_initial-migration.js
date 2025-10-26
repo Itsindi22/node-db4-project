@@ -9,15 +9,39 @@ exports.up = async function(knex) {
       table.string('recipe_name', 200).notNullable().unique()
     })
     .createTable('ingredients', table => {
-      table.increments()
-      table.string('ingredient_name', 200).notNullable().unique
-      table.string('ingredient_unit',50)
- })
+      table.increments('ingredient_id')
+      table.string('ingredient_name', 200).notNullable().unique()
+      table.string('ingredient_unit', 50)
+    })
     .createTable('steps', table => {
-      table.increments()
+      table.increments('step_id')
+      table.string('step_text', 200).notNullable()
+      table.integer('step_number').unsigned().notNullable()
+      table.integer('recipe_id')
+        .unsigned()
+        .notNullable()
+        .references('recipe_id')
+        .inTable('recipes')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE')
     })
     .createTable('step_ingredients', table => {
-      table.increments()
+      table.increments('step_ingredient_id')
+      table.float('quantity').notNullable()
+      table.integer('step_id')
+        .unsigned()
+        .notNullable()
+        .references('step_id') // ✅ FIXED
+        .inTable('steps')
+        .onDelete('CASCADE') // ✅ tests expect cascading delete behavior
+        .onUpdate('CASCADE')
+      table.integer('ingredient_id')
+        .unsigned()
+        .notNullable()
+        .references('ingredient_id')
+        .inTable('ingredients')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE')
     })
 }
 
