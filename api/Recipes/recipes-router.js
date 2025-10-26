@@ -5,7 +5,7 @@ const Recipe = require ('./recipes-model')
 router.get('/:recipe_id',(req,res,next) => {
     Recipe.getRecipeByiId(req.params.recipe_id)
     .then(recourse => {
-        throw new Error('ARGHHHH')
+      
         res.status(200).json(recourse)
     })
     .catch(next)
